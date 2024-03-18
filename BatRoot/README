@@ -1,0 +1,185 @@
+==========================
+*         SETUP 	 *
+==========================
+
+BatRoot is the first tier of data processing.  To run it, you must have ROOT
+(v5.20 or later) properly installed with the FFTW (Fast Fourier Transform
+freeware package) extension.  See the ROOT webpages for install
+instructions.  For Linux machines, most ROOT binaries will have FFTW
+compiled into it.  For Mac OSX, only some versions of ROOT binaries have
+FFTW.  You can check this by looking for the file "libFFTW.so" inside the
+directory $ROOTSYS/lib/.  Currently the most recent version of ROOT to have
+this is 5.22.
+    
+Once you have done this, build the BatRoot executable from this directory (or
+the one above it) by typing:
+
+make BatRoot  
+
+After successful compilation, you will need to set the following paths so
+that BatRoot knows where to find the raw data, filter files, various
+external files and where to put the output:
+
+CDMSBATSDIR (optional if you set BATROOT_PROC and BATROOT_CONST)
+this is the directory where you checked out "cdmsbats"
+i.e. /somedirectory/cdmsbats
+
+BATROOT_PROC (optional)
+an alternate directory where the job-setting files are located,
+without specifying this, BatRoot will pick up the default file from:
+/somedirectory/cdmsbats/UserSettings/BatRootSettings/processing
+
+BATROOT_CONST (optional)
+an alternate directory where the analysis constants are located,
+without specifying this, BatRoot will pick up the default file from:
+/somedirectory/cdmsbats/UserSettings/BatRootSettings/analysis
+
+BATROOT_NOISEFILES
+this is the directory where the filter files are
+(if not yet generated, will wind up when you run BatNoise)
+
+BATROOT_RAWDATA
+this is the directory where the raw data files are (these end in .gz)
+
+BATROOT_RQDATA
+this is the directory where you want to put the output root files.
+
+BATROOT_GPIBFILES
+this is the directory where the gpib file is, if you want to run with this
+option
+
+BATROOT_AUXFILES
+this is the directory where all other auxilliary files are (.dmm, .info, .isr)
+
+The make command places the executable into the BUILD/bin directory 
+(see cdmsbats/README).  To run without having to specify the full path to 
+this directory, you may set your path to point to this directory:
+
+TCSH:		setenv PATH ${PATH}:$CDMSBATSDIR/BUILD/bin
+BASH:		export PATH=${PATH}:$CDMSBATSDIR/BUILD/bin
+
+
+==========================
+*   Executing BatRoot    *
+==========================
+
+Once you have properly set these, and have an appropriate filter file for
+your series (see below if not), run BatRoot by typing:
+
+BatRoot series# dump# maxEvents(optional) processingFile(optional) analysisFile(optional)
+
+For example, if you want to process 10 events from series 170319_1616, file
+170319_1616_F0006.gz (dump6) type:
+BatRoot 170319_1616 6 10
+
+Note that the raw data file does not need to be gzipped (.gz extension).  If
+it is uncompressed, BatRoot will automatically detect this so you do not
+need to change anything in the argument list.
+
+
+==========================
+* Filter File Generation *
+==========================
+
+If you plan to run the OptimalFilter algorithm, you will need a filter file
+(sometimes referred to as "noise files") before running BatRoot.  If someone
+else has already generated a filter file for the data you are trying to
+process, then you can just use that.  However if no such filter file exists,
+then you will have to create one, using the BatNoise executable.  
+
+Please see BatNoise/README for instructions.
+
+
+==========================
+*        SETTINGS 	 *
+==========================
+
+***** Processing Settings ******
+
+In the directory UserSettings, there are various files that begin with the
+prefix "processing".  These are text files that tell BatRoot what processing
+configuration to run in.  Most of the setting are fairly self explanatory.
+Examples of things you can control include which pulse analyzing algorithms
+are run (for example Optimal Filter and PipeFitter).  You can also turn the
+processing on and off for specific detectors or components of the
+experiment.  For example, you can turn off veto processing or you can turn
+off processing of all zips except zip17.  Look in the file and follow the
+examples.  If is fairly self explanatory and the format is flexible.  You DO
+NOT need to RECOMPILE BatRoot for these settings to be picked up!  BatRoot
+will automatically detect which experimental location your data comes from
+(i.e Soudan, or UCB or SUF) and it will load the relevant processing
+configuration for that dataset.
+
+Alternately, you can force BatRoot to read a different processing
+configuration file than the one it picked up be default.  You can do this by
+passing it the name of the file as a fourth argument to the BatRoot command
+(see above).  This file may *either* reside inside the UserSettings/BatRootSettings/processing
+directory or you may set an optional environmental variable,
+"BATROOT_PROC", which points to a directory of your choice.
+
+*****  
+
+TIPS for changing the processing settings: 
+
+- Note that if you turn off reading of ISR and INFO files, then the
+  normalization of energy quanties will be different by the following
+  factors:
+  phonons:  digitizerbins * fbgain * driverGain / (P_rshunt * bias)
+  charge: digitizerbins * Qgain1 * driverGain
+
+- There are multiple ways to turn processing on and off for a single zip,
+  but the best way to do it is to set the DO_PROCESSING flag to 0 for those
+  detectors that are to be "off" and 1 to those that are to be "on". 
+
+- Once the DO_PROCESSING flag is set to 0 for a particular detector, it is
+  not necessary to set the individual flags for each analysis to 0 for the
+  off detectors.  If you do not want empty trees for your off detetors it is
+  recommended that you set the WRITE_ZIP flag to 0 for the off detetors as
+  well.
+
+- One may effectively turn off a single analysis for all zips by deleting
+  its line completely from the processing file.
+
+- The MAX_ZIPS and MAX_TOWERS values are primarily used only in the trigger
+  code at the moment.  The MAX_ZIPS value is also used to configure the
+  output for BatRoot.  At the moment, one tree is generated per zip from 1-X
+  where X is the value that MAX_ZIPS is set to (and only for those detectors
+  that have the WRITE_RQ flag set to 1).  Therefore if you are only
+  processing 1 zip, but it has detector number 5, MAX_ZIPS should be set to
+  at least 5, otherwise BatRoot will be confused when it cannot match the
+  pulses for detector 5 to a zip number.  If in doubt and you don't care
+  about trigger output, make sure MAX_ZIPS is set to a value that at least
+  matches the highest possible number that you expect your detectors to be
+  labeled with.  We acknowedge this is somewhat clumsy and we are working on
+  streamlining this for the future.
+
+- If you are running on older data (i.e. before 2011), be sure to change the
+  DET_TYPE value in the processig file to match your data.  Again this is a
+  bit clumsyand only related to configuring the noise generator.  The
+  DET_TYPE is actually stored in the raw data format.  The raw data value is
+  used to determine the detector type in most cases so this is largely
+  redundant information.  This feature is no longer needed as of cdmsbats
+  releases starting in early 2011.
+
+
+*****  Analysis Settings *****
+
+In the directory UserSettings/BatRootSettings/analysis, is another set of user
+settings files.  These contain all the parameters that are used by the
+various pulse analyzing algorithms.  You can modify these parameters by
+changing the values in these files.  Again you do no need to recompile for
+BatRoot to pick up a new value.  Similar to the processsing configuration,
+you can also force BatRoot to read a different file by passing in the name
+of the file as a fifth argument to the BatRoot command.  This file should
+either reside in UserSettings/BatRootSettings/analysis or in the
+$BATROOT_CONST directory if you have defined the
+BATROOT_CONST environmental variable.
+
+
+----------------------
+
+For additional help or to ask questions, email: llhsu@fnal.gov,
+serfass@berkeley.edu
+
+Last updated:
+$Id$

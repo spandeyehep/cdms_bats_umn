@@ -1,0 +1,13 @@
+This directory contains the code used for applying the blinding cut to low-background data after the Prodv5-3 reprocessing.
+
+The directories algorithm/ and algorithm/Cf/ contain the code that computes the actual blinding decisions.
+The directories checks/Cf/, checks/randoms/ and checks/final/ contain some scripts to check the performance of the data blinding.
+
+Each directory above contains a file called script.py that allows the user to run the code by just entering "python script.py" on the Linux terminal.
+The blinding cut is defined in the function cxBlind_133 of the class BlindingCut, implemented in the file algorithm/BlindingCut.py.
+In turn the class BlindingCut inherits from the class AlgorithmBase implemented in the file algorithm/AlgorithmBase.py.
+
+The original code has been changed before checking it into CVS in order to not show explicitly the actual location of the restricted low-background data.
+For that reason this version runs on low-background data already blinded instead.
+
+Please contact Elias Lopez Asamar (elias.lopez@uam.es) for questions.

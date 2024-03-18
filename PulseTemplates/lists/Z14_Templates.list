@@ -1,0 +1,10 @@
+1408150000      1600000000	Zall_Templates_temporary
+1600000000      9999999999	Z14_Templates_161130_1533
+10000000000     11104000000     Z14_Templates_161130_1533        % Soudan STHybrid 
+11105000000     11307100000     Z14_Templates_R133               % R133 templates 
+11307110000     11505191340     Z14_Templates_R134               % R134 templates 
+11505191341     11505221637     Z14_Templates_R135     		 % 70V bias scan templates
+11505221638     11505280915     Z14_Templates_VScan_0V_BulkEvents_R135_2      % 0V bias scan templates
+11505280916     11505291343     Z14_Templates_VScan_30V_R135     % 30V bias scan templates
+11505291344     11505311240     Z14_Templates_VScan_50V_R135     % 50V bias scan templates
+11505311241     99999999999     Z14_Templates_R135               % R135 templates

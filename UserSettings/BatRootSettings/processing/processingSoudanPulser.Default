@@ -1,0 +1,90 @@
+#################################################################
+#								#
+#		PROCESSING CONFIGURATION			#
+#								#
+#################################################################
+
+
+# =============================
+# PATH
+# =============================
+
+PATH	RAW_DATA	= 	$BATROOT_RAWDATA                              		# path to raw data
+PATH 	AUX_FILES	= 	$BATROOT_AUXFILES			             	# path to auxilliary files
+PATH    NOISE_FILES     =       $BATROOT_NOISEFILES				 	# path to noise files and pulse templates
+PATH	RQ_DATA		= 	$BATROOT_RQDATA				                # Output ROOT file location
+PATH 	GPIB_FILE	= 	$BATROOT_GPIBFILES					# path to auxilliary files
+
+PREFIX  RQ_DATA_PREFIX  =       test_							# Prefix to the output file
+PREFIX  NOISE_PREFIX    =       test_Filter_						# Prefix to the noise file
+PREFIX  FILEINDEX_PREFIX =      V							# Fxxxx for normal data, Vxxxx for veto pulsar
+
+# =============================
+# READ AUXILLIARY FILES
+# =============================
+
+
+READ	ISR_FILE	=	0	# ISR file 
+READ	INFO_FILE	=	0	# Info file 
+READ	GPIB_FILE	=	0	# GPIB
+READ 	DMM_FILE	=	0	# DMM file 
+READ 	FILTER_FILE	=	0	# FILTER file - mandatory for optimal filter processing!
+
+	
+# Note:
+#   - if READ INFO_FILE = 0 , default sample rate, pre and post-trigger are used (see below)
+#   - if READ ISR_FILE  = 0,  pulses are not normalized, no Qbias information
+
+
+
+# =============================
+# GENERAL PROCESSING CONFIG
+# =============================
+
+
+PARAMETER_INTEGER	MAX_EVENTS	=  	10000 		# max number of events to process
+PARAMETER_INTEGER	DEBUG		=	0 		# not activated yet
+PARAMETER_INTEGER	MAX_ZIPS	= 	30		# total number of detectors
+PARAMETER_INTEGER       MAX_TOWERS      =       5               # total number of towers
+PARAMETER_INTEGER	MAX_VTPANELS	=	40		# total number of veto panels
+
+PARAMETER_INTEGER       WRITE_PROCESS_INFO = 	1		# store processing settings
+PARAMETER_INTEGER       WRITE_SETTINGS_INFO  = 	1		# store analysis config parameters
+PARAMETER_INTEGER       WRITE_DETCONFIG_INFO  = 1		# store detector config parameters
+PARAMETER_INTEGER       WRITE_FILTER_INFO  = 	0		# calculate and store filter quantities
+
+# =============================
+# ANALYSIS FLAGS
+# =============================
+
+
+
+# -------------  VETO PROCESSING -------------------
+
+DO_PROCESSING	VETO		=	1
+WRITE_RQ	VETO		=	1
+
+
+# ------------ TRIGGER  PROCESSING ------------------
+
+DO_PROCESSING		TRIGGER		=	1
+WRITE_RQ		TRIGGER		=	1
+ 
+
+# --------------- ZIP PROCESSING -------------------
+
+
+DO_PROCESSING	DETECTOR 1-30	=	0  
+WRITE_RQ	DETECTOR 1-30	=	0
+
+
+#
+#  flags for specific pulse algorithms 
+#  (name of the algorithm should be same as the analysis class)
+#  
+
+# phonon analysis classes - DO NOT modify or copy this comment (for auto_analysis) 
+
+# phonon analysis with sum of pulses 
+
+# charge analysis classes - DO NOT modify or copy this comment (for auto_analysis)

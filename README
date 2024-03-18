@@ -1,0 +1,44 @@
+		  Simplified Makefile system for CDMSBATS
+		  ---------------------------------------
+
+This file describes an *optional* way to compile the packages that reside within 
+cdmsbats. From this directory, users may build any or all of the job stages for 
+raw data processing: BatNoise, BatRoot, or BatCalib, along with the BatCommon 
+library of shared facilities for all three job stages.  If you are looking to 
+install and run the individual packages, please read the BatNoise/README, 
+BatRoot/README or BatCalib/README files for full installation instructions 
+that will get you started.  Each stage of the processing (BatNoise, BatRoot
+and BatCalib) may also be built from within the the package directory.
+
+For users who work with all the stages of processing, or who aren't sure
+what they might need to run, everything can be built in one step:
+
+		make all
+
+If you just need one of the executables, you can put the name of the
+directory for that stage as the make target:
+
+BatRoot:	make BatRoot
+BatNoise:	make BatNoise
+BatCalib:	make BatCalib
+
+The executables will be put into the directory BUILD/bin.  In your PATH, you
+should add the complete directory path to that directory, which you can do
+with one of the following commands, depending on your shell:
+
+TCSH:		setenv PATH ${PATH}:`pwd`/BUILD/bin
+BASH:		export PATH=${PATH}:`pwd`/BUILD/bin
+
+----------------------
+
+Note that currently one needs to have ROOT and the BLAS libraries installed
+to compile the above executables.   
+
+----------------------
+
+For additional help or to ask questions, email: kelsey@slac.stanford.edu,
+serfass@berkeley.edu, llhsu@fnal.gov
+
+Last update: $Id$
+
+

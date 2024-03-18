@@ -1,0 +1,245 @@
+#################################################################
+#								#
+#		ANALYSIS/DETECTOR CONFIGURATION			#
+#								#
+#################################################################
+
+
+#
+# _____________________________________________________
+# 
+#			ANALYSIS
+#        
+# _____________________________________________________
+#
+#
+
+
+
+# ==============  TRIGGER  ANALYSIS ==============
+
+
+PARAMETER_INTEGER	EVENTWINDOW	=  20  #time before & after event to look for plow or qlow trig, in microseconds
+
+
+
+# ===============  ZIP  ANALYSIS =================
+
+
+#
+#   Syntax:     
+#
+#     DETECTOR # or #-# or #,# or combination of above, 
+#                  with or without white space            
+# 
+
+
+# --------- Optimal Filter --------- 
+
+
+# double exponential function form for phonon template
+
+PARAMETER_DOUBLE 	P_RISE_TIME	DETECTOR 1,2				=	38e-6
+PARAMETER_DOUBLE 	P_FALL_TIME	DETECTOR 1,2				=	260e-6
+
+PARAMETER_DOUBLE 	Q_RISE_TIME	DETECTOR 1,2				=	0.8e-6
+PARAMETER_DOUBLE 	Q_FALL_TIME	DETECTOR 1,2				=	22e-6
+
+# Peak Window 
+# Window_min(max) = PreTrigger -(+) SampleRate * PEAK_WINDOW_MIN(MAX)
+
+PARAMETER_DOUBLE	Q_PEAK_WINDOW_MIN	DETECTOR 1,2	=	100e-6	#
+PARAMETER_DOUBLE	Q_PEAK_WINDOW_MAX	DETECTOR 1,2	=	10e-6	# Ge
+
+PARAMETER_DOUBLE	P_PEAK_WINDOW_MIN	DETECTOR 1,2	=	50e-6	# Ge	
+PARAMETER_DOUBLE	P_PEAK_WINDOW_MAX	DETECTOR 1,2	=	200e-6	# Ge
+
+# >>>>>>>>>>>>>>>>>>>>>> Copied from configSoudanData.c58, parameters from t1z5
+# Chisq threshold (thresh_qi, thresh_qo)
+# Above this threshold, the full chisq minimization is done during the charge X-talk calculation.
+# This is set to 2*sigma of the noise blob as determined by QIOFvolts and QOOFvolts (calculated w/ amp max algorithm)
+# Usage is ConfigFileManager::GetVectDoubleParameter(detNum, "Q_CHISQ_THRESH")
+# The value 999999 is a special instruction that turns off the chisq calculation for events of all energies
+
+PARAMETER_DOUBLE        Q_CHISQ_THRESH          DETECTOR 1,2 = 			999999 999999  #turned off for TF
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+# >>>>>>>>>>>>>>>>>>>>>> copied from configSoudanDataSTHbrid
+# Toggle this between 1 and 0 to turn on and off the delay interpolation routine
+# Note that it will only be done for events that are above the Q_CHISQ_THRESH
+
+PARAMETER_INTEGER       Q_DELAY_INTERPOLATE     DETECTOR 1-2 = 	0  #turned off for TF
+# >>>>>>>>>>>>>>>>>>>>>>>
+
+# --------- F5ChargeX start and end bin values -----------
+
+#PARAMETER_INTEGER	Q_START_GOOD_CHARGE	DETECTOR 1,2	=	912
+#PARAMETER_INTEGER	Q_END_GOOD_CHARGE	DETECTOR 1,2	=	1511
+#PARAMETER_INTEGER	Q_TEMPLATE_START	DETECTOR 1,2	=	1024
+#PARAMETER_DOUBLE        Q_F5_NOISE		DETECTOR 1,2  	=       1.0e-7
+PARAMETER_INTEGER	Q_START_GOOD_CHARGE	DETECTOR 1,2	=	138 # for g101 1024 bin data
+PARAMETER_INTEGER	Q_END_GOOD_CHARGE	DETECTOR 1,2	=	737
+PARAMETER_INTEGER	Q_TEMPLATE_START	DETECTOR 1,2	=	250
+PARAMETER_DOUBLE        Q_F5_NOISE		DETECTOR 1,2  	=       1.0e-7
+	
+
+
+# ------- Butterworth filter for timing calculation (rtftWalk) ------
+
+
+PARAMETER_INTEGER	P_RTFT_BUTTERWORTH_ORDER		DETECTOR 1,2	=	2
+PARAMETER_DOUBLE	P_RTFT_BUTTERWORTH_CUTOFF_DEFAULT	DETECTOR 1,2	=	50e3	# Ge
+
+PARAMETER_INTEGER	Q_RTFT_BUTTERWORTH_ORDER	DETECTOR 1,2	=	2
+PARAMETER_DOUBLE	Q_RTFT_BUTTERWORTH_CUTOFF	DETECTOR 1,2	=	200e3	# Ge
+
+# ------- Pulse truncation for peak scan (rtftWalk) -----------------------
+
+PARAMETER_INTEGER       P_RTFT_PULLBACK                 DETECTOR 1-2                                   =       150
+
+# ------- Pileup cut for noise file generation -----------------------
+
+# this cut is calculated directly in the noise code
+PARAMETER_DOUBLE        PILEUP_CUT	DETECTOR 1,2					=	1.0
+
+PARAMETER_INTEGER       PILEUP_NCHUNK   DETECTOR 1-2                                   =       16 # number of divisions for pileup calculation
+PARAMETER_DOUBLE        PILEUP_FRAC     DETECTOR 1-2                                   =        0.35 #minimum fraction of events in pileup distribution allowed to fail
+PARAMETER_INTEGER        PILEUP_BINS     DETECTOR 1-2                                  =        30 
+
+# ------- MinMax cut for noise file generation -----------------------
+
+PARAMETER_INTEGER       MINMAX_MAX      DETECTOR 1-2                                   =       1024 # max limit for minmax histo, used in cut calcuation, must be power of 2
+PARAMETER_DOUBLE        MINMAX_YTHRESH   DETECTOR 1-2                                   =       20.0 
+PARAMETER_DOUBLE	MINMAX_NSIGMA    DETECTOR 1-2					= 	 3.0  # roughly the number of sigma cut for the distribution, make smaller for tighter cut.
+
+# --------   template  normalization -------
+
+PARAMETER_DOUBLE	P_PULSENORM	DETECTOR 1,2	=  25e-12
+PARAMETER_DOUBLE	Q_PULSENORM	DETECTOR 1,2	=  1
+
+# -------- Butterworth filter for phonon integal calculation --------
+
+PARAMETER_INTEGER	P_INTEGRAL_BUTTERWORTH_ORDER	DETECTOR 1,2	=	2
+PARAMETER_DOUBLE	P_INTEGRAL_BUTTERWORTH_CUTOFF	DETECTOR 1,2	=	100
+
+# --------- Inflection time ----------
+
+PARAMETER_INTEGER	P_INFLECTION_WINDOW_MIN		DETECTOR 1-2	=	400
+PARAMETER_INTEGER	P_INFLECTION_WINDOW_MAX		DETECTOR 1-2	=	1000
+
+# --------- relative phonon calibration (for PT)  ---------
+
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION		DETECTOR 1,2	=	1  	1  	1  	1  1  1  1  1
+
+
+
+# _____________________________________________________
+#
+#              DETECTOR CONFIGURATION
+#        
+# _____________________________________________________
+#
+
+
+# ------------- towers name ---------------
+
+DET_TOWER	DETECTOR 1-2	=	T1
+
+
+# ------------ index within tower ---------
+
+PARAMETER_INTEGER 	INDEX_IN_TOWER DETECTOR 1 	= 	1
+PARAMETER_INTEGER 	INDEX_IN_TOWER DETECTOR 2	= 	2
+
+
+# ----------- detector substrate -----------------
+
+DET_SUBSTRATE 	DETECTOR 1,2 =	Ge
+
+
+
+# ---------- ADC/Trigger configuration ---------
+
+# Note:
+#  sample rate, pretrigger, posttrigger are read INFO file
+#   default values below are used in case file not existing
+
+# Charge and phonon bias
+PARAMETER_DOUBLE 	Q_BIAS	DETECTOR 1				=	-2.5	-2.5
+PARAMETER_DOUBLE 	Q_BIAS	DETECTOR 2				=	2.5	2.5
+PARAMETER_DOUBLE 	P_BIAS	DETECTOR 1,2				=	1e-4 1e-4 1e-4 1e-4 1e-4 1e-4 1e-4 1e-4 # in amps
+
+#  default Sample rate 
+
+PARAMETER_DOUBLE	P_SAMPLERATE	DETECTOR 1,2	=	1.25e06
+PARAMETER_DOUBLE	Q_SAMPLERATE	DETECTOR 1,2	=	2.5e06			
+
+# default Pre-trigger 
+
+PARAMETER_INTEGER	P_PRETRIGGER	DETECTOR 1,2	=	500 # 400us
+PARAMETER_INTEGER	Q_PRETRIGGER	DETECTOR 1,2	=	1000			
+
+#  default Post-trigger 
+			
+PARAMETER_INTEGER	P_POSTTRIGGER	DETECTOR 1,2	=	3596 # 4096 samples 
+PARAMETER_INTEGER	Q_POSTTRIGGER	DETECTOR 1,2	=	7192 # 8192 samples
+
+# # default Pre-trigger 
+# 
+# PARAMETER_INTEGER	P_PRETRIGGER	DETECTOR 1,2	=	125 125 
+# PARAMETER_INTEGER	Q_PRETRIGGER	DETECTOR 1,2	=	250	250 # 100us		
+# 
+# #  default Post-trigger 
+# 			
+# PARAMETER_INTEGER	P_POSTTRIGGER	DETECTOR 1,2	=	387 387
+# PARAMETER_INTEGER	Q_POSTTRIGGER	DETECTOR 1,2	=	774 774 # 1024 samples for charge only data
+
+
+# digitizer Bins per Volt at Struck 
+PARAMETER_DOUBLE	P_DigitizerBinsPerVolt	DETECTOR 1,2	=	6553.6 # DCRC3 +/- 1.25V 14bit
+PARAMETER_DOUBLE	Q_DigitizerBinsPerVolt	DETECTOR 1,2	=	16000 # DCRC3 AD7621 62.5uV/ADC
+
+# R shunt
+PARAMETER_DOUBLE	P_Rshunt	DETECTOR 1,2	=	20E-3
+
+# Phonon feeback gain (=10 (input/fb turn ratio) * 1000 Ohm fb resistor)
+PARAMETER_DOUBLE	P_FBgain	DETECTOR 1,2	=	10000
+
+# Charge feedback cap = 1 pF
+PARAMETER_DOUBLE	Q_CFB		DETECTOR 1,2	=	1e-12	
+
+# Charge feedback resistor = 40 MOhms
+PARAMETER_DOUBLE	Q_RFB		DETECTOR 1,2	=	40e6
+
+# charge 1st stage gain
+PARAMETER_DOUBLE	Q_Gain1		DETECTOR 1,2	=	-4 # DCRC3 charge gain
+
+# driver gains (if not set from ISR file) 
+#PARAMETER_DOUBLE	P_DriverGain	DETECTOR 1,2	=	20	
+#PARAMETER_DOUBLE	Q_DriverGain	DETECTOR 1,2	=	2
+PARAMETER_DOUBLE	P_DriverGain	DETECTOR 1,2	=	1	
+PARAMETER_DOUBLE	Q_DriverGain	DETECTOR 1,2	=	1
+
+
+
+# saturation value 
+
+PARAMETER_INTEGER	P_SATURATION	DETECTOR 1,2 	=	16384  #  DCRC3 14-bit
+PARAMETER_INTEGER	Q_SATURATION	DETECTOR 1,2	=	65535  #  DCRC3 16-bit
+
+# minimum value 
+
+PARAMETER_INTEGER	P_MINADC	DETECTOR 1,2 	=	2
+PARAMETER_INTEGER	Q_MINADC	DETECTOR 1,2	=	2
+
+# baseline 
+
+PARAMETER_INTEGER	P_BASELINE_MIN 		DETECTOR 1,2 	=	1
+PARAMETER_INTEGER	P_BASELINE_MAX 		DETECTOR 1,2 	=	800 # 320us
+PARAMETER_INTEGER	P_POSTBASELINE 		DETECTOR 1,2 	=	100 #for end of trace baseline
+
+PARAMETER_INTEGER	Q_BASELINE_MIN 		DETECTOR 1,2 	=	1
+PARAMETER_INTEGER	Q_BASELINE_MAX 		DETECTOR 1,2 	=	800
+PARAMETER_INTEGER	Q_POSTBASELINE 		DETECTOR 1,2 	=	100 #for end of trace baseline
+

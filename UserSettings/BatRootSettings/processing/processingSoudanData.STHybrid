@@ -1,0 +1,147 @@
+#################################################################
+#								#
+#		PROCESSING CONFIGURATION			#
+#								#
+#################################################################
+
+
+# =============================
+# PATH
+# =============================
+
+PATH	RAW_DATA	= 	$BATROOT_RAWDATA                              		# path to raw data
+PATH 	AUX_FILES	= 	$BATROOT_AUXFILES			             	# path to auxilliary files
+PATH    NOISE_FILES     =       $BATROOT_NOISEFILES				 	# path to noise files and pulse templates
+PATH	RQ_DATA		= 	$BATROOT_RQDATA				                # Output ROOT file location
+PATH 	GPIB_FILE	= 	$BATROOT_GPIBFILES					# path to auxilliary files
+
+PREFIX  RQ_DATA_PREFIX  =       testST_							# Prefix to the output file
+PREFIX  NOISE_PREFIX    =       testST_Filter_						# Prefix to the noise file
+PREFIX  FILEINDEX_PREFIX =      F							# Fxxxx for normal data, Vxxxx for veto pulsar
+
+# =============================
+# READ AUXILLIARY FILES
+# =============================
+
+
+READ	ISR_FILE	=	1	# ISR file 
+READ	INFO_FILE	=	1	# Info file 
+READ	GPIB_FILE	=	0	# GPIB
+READ 	DMM_FILE	=	1	# DMM file 
+READ 	FILTER_FILE	=	1	# FILTER file - mandatory for optimal filter processing!
+	
+# Note:
+#   - if READ INFO_FILE = 0 , default sample rate, pre and post-trigger are used (see below)
+#   - if READ ISR_FILE  = 0,  pulses are not normalized, no Qbias information
+
+
+
+# =============================
+# GENERAL PROCESSING CONFIG
+# =============================
+
+
+PARAMETER_INTEGER	MAX_EVENTS	=  	10000 		# max number of events to process
+PARAMETER_INTEGER	DEBUG		=	0 		# not activated yet
+PARAMETER_INTEGER	MAX_ZIPS	= 	30		# total number of detectors - Note: max label is 30 despite only 24 zips active
+PARAMETER_INTEGER       MAX_TOWERS      =       5               # total number of towers - Note: max label is 5 despite only 4 towers active
+PARAMETER_INTEGER	MAX_VTPANELS	=	40		# total number of veto panels
+
+
+# Type number taken from raw data format
+
+PARAMETER_INTEGER	DET_TYPE 		DETECTOR 1		= 6    # ENDCAPS  
+PARAMETER_INTEGER	DET_TYPE 		DETECTOR 2-6		= 5    # Mercedes ZIPS
+PARAMETER_INTEGER	DET_TYPE 		DETECTOR 7-30		= 4    # ZIPS
+
+
+PARAMETER_INTEGER       WRITE_PROCESS_INFO = 	1		# store processing settings
+PARAMETER_INTEGER       WRITE_SETTINGS_INFO  = 	1		# store analysis config parameters
+PARAMETER_INTEGER       WRITE_DETCONFIG_INFO  = 1		# store detector config parameters
+PARAMETER_INTEGER       WRITE_FILTER_INFO  = 	1		# calculate and store filter quantities
+PARAMETER_INTEGER       WRITE_NOISE_PULSES  =   0               # store pulses processed for filter calculation
+
+# =============================
+# ANALYSIS FLAGS
+# =============================
+
+
+
+# -------------  VETO PROCESSING -------------------
+
+DO_PROCESSING	VETO		=	0                    # needs the trigger processing 
+WRITE_RQ	VETO		=	0
+
+
+# ------------ TRIGGER  PROCESSING ------------------
+
+DO_PROCESSING		TRIGGER		=	1
+WRITE_RQ		TRIGGER		=	1
+ 
+
+# --------------- ZIP PROCESSING -------------------
+
+
+DO_PROCESSING	DETECTOR 1-6,13-30		=	1    # nothing connected to tower 2 readout so skip 7-12 
+DO_PROCESSING	DETECTOR 7-12			=	0    # no ST2 
+
+WRITE_RQ	DETECTOR 1-6,13-30		=	1	 
+WRITE_RQ	DETECTOR 7-12		     	= 	0    # no ST2
+
+#
+#  flags for specific pulse algorithms 
+#  (name of the algorithm should be same as the analysis class)
+#  
+
+# phonon analysis classes - DO NOT modify or copy this comment (for auto_analysis) 
+
+DO_PHONON_ALGORITHM     InflectionTime          DETECTOR 1-6,13-30	=	1
+DO_PHONON_ALGORITHM     InflectionTime          DETECTOR 7-12		=	0
+
+DO_PHONON_ALGORITHM	OptimalFilterPhonon	DETECTOR 1-6,13-30	=	1
+DO_PHONON_ALGORITHM	OptimalFilterPhonon	DETECTOR 7-12		=	0
+
+DO_PHONON_ALGORITHM     ConstFreqRTFTWalkPhonon	DETECTOR 1-6,13-30   	=       1
+DO_PHONON_ALGORITHM     ConstFreqRTFTWalkPhonon	DETECTOR 7-12   	=       0
+
+DO_PHONON_ALGORITHM	VarFreqRTFTWalkPhonon 	DETECTOR 1-6,13-30	=	1 # needs optimal filter
+DO_PHONON_ALGORITHM	VarFreqRTFTWalkPhonon 	DETECTOR 7-12		=	0
+
+DO_PHONON_ALGORITHM	PulseIntegral 		DETECTOR 1-6,13-30	=	1
+DO_PHONON_ALGORITHM	PulseIntegral 		DETECTOR 7-12		=	0
+
+DO_PHONON_ALGORITHM     NoiseSelector           DETECTOR 13-30		=	1 # needs optimal filter and optionally rtftwalk
+DO_PHONON_ALGORITHM     NoiseSelector           DETECTOR 1-12		=	0 
+
+DO_PHONON_ALGORITHM	PipeFitPhonon 		DETECTOR 13-30   	=	1 # needs noise selector
+DO_PHONON_ALGORITHM	PipeFitPhonon 		DETECTOR 1-12   	=	0 # needs noise selector
+
+DO_PHONON_ALGORITHM     WedgeFitPhonon          DETECTOR 1-30   	=   	0 # needs noise selector
+
+# phonon analysis with sum of pulses 
+
+DO_PHONON_TOT		OptimalFilterPhonon	DETECTOR 1-6,13-30	=	1
+DO_PHONON_TOT		OptimalFilterPhonon	DETECTOR 7-12		=	0
+
+DO_PHONON_TOT		ConstFreqRTFTWalkPhonon	DETECTOR 1-6,13-30	=	1
+DO_PHONON_TOT		ConstFreqRTFTWalkPhonon	DETECTOR 7-12		=	0
+
+DO_PHONON_TOT		VarFreqRTFTWalkPhonon	 DETECTOR 1-6,13-30	=	1
+DO_PHONON_TOT		VarFreqRTFTWalkPhonon	 DETECTOR 7-12		=	0
+
+# charge analysis classes - DO NOT modify or copy this comment (for auto_analysis)
+
+DO_CHARGE_ALGORITHM     F5ChargeX               DETECTOR 2-6,13-30	=	1   # needs OptimalFilterChargeX
+DO_CHARGE_ALGORITHM     F5ChargeX               DETECTOR 1,7-12		=	0
+
+DO_CHARGE_ALGORITHM	OptimalFilterChargeX	DETECTOR 2-6,13-30	=	1
+DO_CHARGE_ALGORITHM	OptimalFilterChargeX	DETECTOR 1,7-12		=	0
+
+DO_CHARGE_ALGORITHM	OptimalFilterCharge	DETECTOR 1		=	1
+DO_CHARGE_ALGORITHM	OptimalFilterCharge	DETECTOR 2-30		=	0
+
+DO_CHARGE_ALGORITHM	RTFTWalkCharge 		DETECTOR 1-6,13-30	=	1
+DO_CHARGE_ALGORITHM	RTFTWalkCharge 		DETECTOR 7-12		=	0
+
+DO_CHARGE_ALGORITHM	ChargeNoiseCovariance 	DETECTOR 1-30		=	0   # only for special studies, located in NoiseBuilder
+

@@ -1,0 +1,88 @@
+#################################################################
+#								#
+#		PROCESSING CONFIGURATION			#
+#								#
+#################################################################
+
+
+# =============================
+# PATH
+# =============================
+
+PATH	BATCALIB_RQDATA		= 	$BATCALIB_RQDATA                              	# path to input data 
+PATH	BATCALIB_RRQDATA	= 	$BATCALIB_RRQDATA                              	# path to output data 
+
+PREFIX  RQ_DATA_PREFIX  	=       ProdDQ						# Prefix to the input file
+PREFIX  RRQ_DATA_PREFIX  	=      	calib_ProdDQ					# Prefix to the output file
+PREFIX  FILEINDEX_PREFIX 	=       F						# Fxxxx for normal data, Vxxxx for veto pulsar
+
+
+# =============================
+# READ AUXILLIARY FILES
+# =============================
+
+
+# =============================
+# GENERAL PROCESSING CONFIG
+# =============================
+
+PARAMETER_INTEGER       USE_MERGED_RQ         = 0               # if 1 then BatCalib looks for merged RQ ROOT files, unmerged if 0            
+
+PARAMETER_INTEGER	MAX_EVENTS	=  	1000100 	# max number of events to process
+PARAMETER_INTEGER	MAX_ZIPS	= 	17		# total number of detectors
+PARAMETER_INTEGER       MAX_TOWERS      =       3               # total number of towers
+PARAMETER_INTEGER	MAX_VTPANELS	=	40		# total number of veto panels
+
+# Should correspond to number in raw data format
+
+PARAMETER_INTEGER	DET_TYPE 		DETECTOR 1,7,8,14	= 7    # ENDCAPS  
+PARAMETER_INTEGER	DET_TYPE 		DETECTOR 2-6,9-13	= 5    # Mercedes ZIPS
+PARAMETER_INTEGER	DET_TYPE 		DETECTOR 15-17		= 11   # iZIPS
+
+
+# Parameters for the output RRQ file
+
+PARAMETER_INTEGER       WRITE_PROCESS_INFO = 	1		# store processing settings
+PARAMETER_INTEGER       WRITE_FILTER_INFO  = 	1		# store optimal filter resolution quantities
+
+# =============================
+# ANALYSIS FLAGS
+# =============================
+
+
+# ------------ EVENT TIMING  PROCESSING ------------------
+
+
+DO_PROCESSING		EVENTTIME	=	1
+
+
+
+# ------------ TRIGGER PROCESSING ------------------
+
+
+DO_PROCESSING		TRIGGER		=	1    # won't be done unless EVENTTIME is on
+
+
+
+# --------------- ZIP PROCESSING -------------------
+
+
+DO_PROCESSING	DETECTOR 1-17							= 	1 
+
+
+PARAMETER_INTEGER       OVERRIDE_BIAS_WCONFIG   			        =       0   # override bias values in the RQ files with those in calibration file                                                           # only for TF and MC use and temporary!
+
+#
+#  flags for specific pulse algorithms - turn these off if RQ's are absent!
+#  
+
+DO_ALGORITHM     CalibrateOFRes	              DETECTOR 1-17		=	1
+
+DO_ALGORITHM     ZipCalibration               DETECTOR 1-17		=	1
+
+DO_ALGORITHM     CalcVarFreqRTFTWalkRRQ       DETECTOR 1-17		=	0
+
+DO_ALGORITHM     CalcConstFreqRTFTWalkRRQ     DETECTOR 1-17		=	1
+
+DO_ALGORITHM     TotalPhonon                  DETECTOR 15-17            =      1   #calcs related to total phonon
+DO_ALGORITHM     TotalPhonon                  DETECTOR 1-14             =      0   #calcs related to total phonon

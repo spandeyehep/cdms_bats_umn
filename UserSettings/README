@@ -1,0 +1,13 @@
+Last Updated: $Id$
+
+Oct. 2011 - Job configuration and calibration files are subdirectories here:
+
+UserSettings/BatRootSettings	Processing files for BatRoot and BatNoise
+UserSettings/BatCalibSettings	Processing files for BatCalib
+
+Notes:
+
+Feb. 2011 - We changed the name of the class RTFTWalkPhonon to VarFreqRTFTWalk.  The change was not propaged to older grid processing files (R123-R130), so if one wants to use those again, be sure to change instances of the name "RTFTWalkPhonon" to "VarFreqRTFTWalk". - LLH
+
+
+

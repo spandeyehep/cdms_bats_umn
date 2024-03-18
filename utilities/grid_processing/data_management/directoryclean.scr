@@ -1,0 +1,16 @@
+rm -r /grid/data/cdms/processing/br_output/R123/bg/*_*
+rm -r /grid/data/cdms/processing/br_output/R123/cf/*_*
+rm -r /grid/data/cdms/processing/br_output/R123/ba/*_*
+
+rm -r /grid/data/cdms/br_logs/*_*
+
+rm -r /grid/data/cdms/br_logs/err
+mkdir /grid/data/cdms/br_logs/err
+
+rm -r /grid/data/cdms/br_logs/log
+mkdir /grid/data/cdms/br_logs/log
+
+rm -r /grid/data/cdms/br_logs/out
+mkdir /grid/data/cdms/br_logs/out
+
+

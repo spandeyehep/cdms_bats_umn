@@ -1,0 +1,115 @@
+#################################################################
+#								#
+#		PROCESSING CONFIGURATION			#
+#								#
+#################################################################
+
+
+# =============================
+# PATH
+# =============================
+
+PATH	RAW_DATA	= 	$BATROOT_RAWDATA                              		# path to raw data
+PATH 	AUX_FILES	= 	$BATROOT_AUXFILES			             	# path to auxilliary files
+PATH    NOISE_FILES     =       $BATROOT_NOISEFILES				 	# path to noise files and pulse templates
+PATH	RQ_DATA		= 	$BATROOT_RQDATA				                # Output ROOT file location
+PATH 	GPIB_FILE	= 	$BATROOT_GPIBFILES					# path to auxilliary files
+
+PREFIX  RQ_DATA_PREFIX  =       Prodv2-3_						# Prefix to the output file
+PREFIX  NOISE_PREFIX    =       Prodv2-3_Filter_					# Prefix to the noise file
+PREFIX  FILEINDEX_PREFIX =      F							# Fxxxx for normal data, Vxxxx for veto pulsar
+
+# =============================
+# READ AUXILLIARY FILES
+# =============================
+
+
+READ	ISR_FILE	=	1	# ISR file 
+READ	INFO_FILE	=	1	# Info file 
+READ	GPIB_FILE	=	1	# GPIB
+READ 	DMM_FILE	=	1	# DMM file 
+READ 	FILTER_FILE	=	1	# FILTER file - mandatory for optimal filter processing!
+	
+# Note:
+#   - if READ INFO_FILE = 0 , default sample rate, pre and post-trigger are used (see below)
+#   - if READ ISR_FILE  = 0,  pulses are not normalized, no Qbias information
+
+
+
+# =============================
+# GENERAL PROCESSING CONFIG
+# =============================
+
+
+PARAMETER_INTEGER	MAX_EVENTS	=  	500 		# max number of events to process
+PARAMETER_INTEGER	DEBUG		=	0 		
+PARAMETER_INTEGER	MAX_ZIPS	= 	30		# total number of detectors
+PARAMETER_INTEGER       MAX_TOWERS      =       5               # total number of towers
+PARAMETER_INTEGER	MAX_VTPANELS	=	40		# total number of veto panels
+
+
+# Type number taken from raw data format
+
+PARAMETER_INTEGER	DET_TYPE 		DETECTOR 1-30		= 4    # ZIPS
+
+
+PARAMETER_INTEGER       WRITE_PROCESS_INFO = 	1		# store processing settings
+PARAMETER_INTEGER       WRITE_CONFIG_INFO  = 	1		# store analysis config parameters
+PARAMETER_INTEGER       WRITE_FILTER_INFO  = 	1		# calculate and store filter quantities
+PARAMETER_INTEGER       WRITE_NOISE_PULSES  = 	0		# store pulses processed for filter calculation
+
+
+# =============================
+# ANALYSIS FLAGS
+# =============================
+
+
+
+# -------------  VETO PROCESSING -------------------
+
+DO_PROCESSING	VETO		=	0
+WRITE_RQ	VETO		=	0
+
+
+# ------------ TRIGGER  PROCESSING ------------------
+
+DO_PROCESSING		TRIGGER		=	1
+WRITE_RQ		TRIGGER		=	1
+
+
+# --------------- ZIP PROCESSING -------------------
+
+
+DO_PROCESSING	DETECTOR 1-30	=	1  
+WRITE_RQ	DETECTOR 1-30	=	1
+
+
+#
+#  flags for specific pulse algorithms 
+#  (name of the algorithm should be same as the analysis class)
+#  
+
+# phonon analysis classes - DO NOT modify or copy this comment (for auto_analysis) 
+
+DO_PHONON_ALGORITHM     InflectionTime          DETECTOR 1-30	=	1
+DO_PHONON_ALGORITHM     NoiseSelector           DETECTOR 1-30	=	1
+DO_PHONON_ALGORITHM	PipeFitPhonon 		DETECTOR 1-30   =	1
+DO_PHONON_ALGORITHM	OptimalFilterPhonon	DETECTOR 1-30	=	1
+DO_PHONON_ALGORITHM	RTFTWalkPhonon 		DETECTOR 1-30	=	1
+DO_PHONON_ALGORITHM     ConstFreqRTFTWalkPhonon	DETECTOR 1-30   =       1
+DO_PHONON_ALGORITHM	PulseIntegral 		DETECTOR 1-30	=	1
+DO_PHONON_ALGORITHM     WedgeFitPhonon          DETECTOR 1-30   =       1
+
+# phonon analysis with sum of pulses 
+
+DO_PHONON_TOT		OptimalFilterPhonon	DETECTOR 1-30	=	1
+DO_PHONON_TOT		RTFTWalkPhonon	 	DETECTOR 1-30	=	1
+DO_PHONON_TOT		ConstFreqRTFTWalkPhonon	DETECTOR 1-30	=	1
+
+
+# charge analysis classes - DO NOT modify or copy this comment (for auto_analysis)
+
+DO_CHARGE_ALGORITHM     F5ChargeX               DETECTOR 1-30	=	1
+DO_CHARGE_ALGORITHM	OptimalFilterChargeX	DETECTOR 1-30	=	1
+DO_CHARGE_ALGORITHM	RTFTWalkCharge 		DETECTOR 1-30	=	1
+

@@ -1,0 +1,403 @@
+#################################################################
+#								#
+#		ANALYSIS/DETECTOR CONFIGURATION			#
+#								#
+#################################################################
+
+
+#
+# _____________________________________________________
+# 
+#			ANALYSIS
+#        
+# _____________________________________________________
+#
+#
+
+
+#  ============== VETO ANALYSIS  =================
+
+PARAMETER_INTEGER	VT_PRETRIGGER 		=	924
+PARAMETER_DOUBLE	VT_SLOPE_THRESH 	=	16.67         # this is 50/3 for minimum slope/threshold cut
+PARAMETER_DOUBLE	VT_SAMPLE_TIME  	= 	0.2           # in usec
+PARAMETER_DOUBLE	VT_BINTO_VOLTS		=	2.44140625e-3	
+PARAMETER_INTEGER	VT_BASELINEMIN		=	1800
+PARAMETER_INTEGER	VT_BASELINEMAX		=	2800
+PARAMETER_DOUBLE	VT_TRIGGEROFFSET	=	1.0           # in usec, extension past trigger time to look for pulses
+
+
+
+
+# ==============  TRIGGER  ANALYSIS ==============
+
+
+PARAMETER_INTEGER	EVENTWINDOW	=  20  #time before & after event to look for plow or qlow trig, in microseconds
+
+
+
+# ===============  ZIP  ANALYSIS =================
+
+
+#
+#   Syntax:     
+#
+#     DETECTOR # or #-# or #,# or combination of above, 
+#                  with or without white space            
+# 
+
+
+# --------- Optimal Filter --------- 
+
+
+# double exponential function form for phonon template
+
+# FIXME not set yet! (current numbers are completely fictional for phonons)
+   
+PARAMETER_DOUBLE 	P_RISE_TIME	DETECTOR 1-15			=	40e-6
+PARAMETER_DOUBLE 	P_FALL_TIME	DETECTOR 1-15			=	600e-6
+
+PARAMETER_DOUBLE 	Q_RISE_TIME	DETECTOR 1-15			=	0.8e-6
+PARAMETER_DOUBLE 	Q_FALL_TIME	DETECTOR 1-15			=	22e-6
+
+
+# Peak Window 
+# Window_min(max) = PreTrigger -(+) SampleRate * PEAK_WINDOW_MIN(MAX)
+
+PARAMETER_DOUBLE	Q_PEAK_WINDOW_MAX	DETECTOR 1-15		=	10e-6	# Ge
+
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 1              =       40e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 2              =       35e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 3              =       50e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 4              =       100e-6; # cdmslite
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 5              =       35e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 6              =       40e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 7              =       35e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 8              =       35e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 9              =       35e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 10             =       35e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 11             =       35e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 12             =       35e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 13             =       40e-6;
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 14             =       100e-6; # cdmslite
+PARAMETER_DOUBLE        Q_PEAK_WINDOW_MIN       DETECTOR 15             =       40e-6;
+
+
+
+
+
+# Z window:  [window_min : window_max]*sampleRate
+PARAMETER_DOUBLE	Q_Z_WINDOW_MIN		DETECTOR 1-15		=	-2e-6	# Ge
+PARAMETER_DOUBLE	Q_Z_WINDOW_MAX		DETECTOR 1-15		=	+2e-6	# Ge
+
+
+PARAMETER_DOUBLE	P_PEAK_WINDOW_MIN	DETECTOR 1-15		=	200e-6	# Ge	
+PARAMETER_DOUBLE	P_PEAK_WINDOW_MAX	DETECTOR 1-15		=	100e-6	# Ge
+
+PARAMETER_DOUBLE        P1X2OF_PEAK_WINDOW_MIN  DETECTOR 4,14             =       325e-6  # Ge                                  
+PARAMETER_DOUBLE        P1X2OF_PEAK_WINDOW_MAX  DETECTOR 4,14             =       100e-6  # Ge      
+
+PARAMETER_INTEGER     P_OF1X2_DELAY_INTERPOLATE       DETECTOR 1-15   =       1
+
+#NSOF chisquare half window
+PARAMETER_INTEGER	P_NSPEAK_CHIWINDOW_HALF	DETECTOR 1-15		=	0 
+
+
+# OF chisq cutoff frequency (in Hz)
+PARAMETER_DOUBLE	P_CHISQ_CUTOFF  	DETECTOR 1-15		=	10e3
+
+
+
+# charge OF
+
+PARAMETER_INTEGER       Q_DELAY_INTERPOLATE     DETECTOR 1-15    	= 	1
+
+PARAMETER_INTEGER 	Q_Z_DELAY_CONSTRAINT	DETECTOR 4 	 	= 	0    # cdmslite
+PARAMETER_INTEGER       Q_PTDELAY_CONSTRAINT    DETECTOR 4 	 	=       0 # cdmslite
+
+PARAMETER_INTEGER 	Q_Z_DELAY_CONSTRAINT	DETECTOR 1-3,5-15	= 	1
+PARAMETER_INTEGER       Q_PTDELAY_CONSTRAINT    DETECTOR 1-3,5-15	=       1
+
+
+# --------- F5ChargeX start and end bin values -----------
+
+PARAMETER_INTEGER	Q_START_GOOD_CHARGE	DETECTOR 1-15	=	900
+PARAMETER_INTEGER	Q_END_GOOD_CHARGE	DETECTOR 1-15	=	1500
+PARAMETER_INTEGER	Q_TEMPLATE_START	DETECTOR 1-15	=	1024
+PARAMETER_DOUBLE        Q_F5_NOISE		DETECTOR 1-15  	=       1.0e-7
+	
+
+
+# ------- Butterworth filter for timing calculation (rtftWalk) ------
+
+
+PARAMETER_INTEGER	P_RTFT_BUTTERWORTH_ORDER		DETECTOR 1-15				=  2
+PARAMETER_DOUBLE     	P_RTFT_BUTTERWORTH_CUTOFF_LOWERLIMIT 	DETECTOR 1-15    			=  6e3
+PARAMETER_DOUBLE     	P_RTFT_BUTTERWORTH_CUTOFF_UPPERLIMIT 	DETECTOR 1-15    			=  200e3
+PARAMETER_DOUBLE     	P_RTFT_BUTTERWORTH_SCALEFACTOR       	DETECTOR 1-15    			=  3
+
+PARAMETER_INTEGER	Q_RTFT_BUTTERWORTH_ORDER	DETECTOR 1-15					=	2
+PARAMETER_DOUBLE	Q_RTFT_BUTTERWORTH_CUTOFF	DETECTOR 1-15					=	200e3	# Ge
+
+# -------- the following two parameters are used by ConstFreqrtftWalk, the older version of rtftWalk
+
+PARAMETER_DOUBLE	P_RTFT_BUTTERWORTH_CUTOFF_DEFAULT   DETECTOR 1-15		=	50e3	# Ge
+PARAMETER_INTEGER       P_RTFT_PULLBACK             	    DETECTOR 1-15               =       150
+
+# ------- Pileup cut for noise file generation -----------------------
+
+
+PARAMETER_INTEGER       DO_PILEUP_CUT   DETECTOR 1-12,14-15                      =      1
+PARAMETER_INTEGER       DO_PILEUP_CUT   DETECTOR 13                              =      0     # use chi2 only
+
+
+PARAMETER_DOUBLE	PILEUP_CUT	DETECTOR 1-15				 = 	1.5
+PARAMETER_INTEGER       PILEUP_NCHUNK   DETECTOR 1-15                            =      16     # number of divisions for pileup calculation
+PARAMETER_DOUBLE        PILEUP_FRAC     DETECTOR 1-15                            =      0.35   # not used by default 
+PARAMETER_INTEGER       PILEUP_BINS     DETECTOR 1-15                            =      30     # not used by default 
+
+
+# ------- MinMax cut for noise file generation -----------------------
+PARAMETER_INTEGER       DO_MINMAX     DETECTOR 1-12,14-15                        =       1
+PARAMETER_INTEGER       DO_MINMAX     DETECTOR 13                                =       0     # use chi2 only
+
+
+PARAMETER_INTEGER       MINMAX_MAX       DETECTOR 1-15                           =       1024 # max limit for minmax histo, used in cut calcuation, must be power of 2
+
+PARAMETER_DOUBLE        MINMAX_YTHRESH   DETECTOR 1-15                           =       20.0 
+
+PARAMETER_DOUBLE	MINMAX_NSIGMA    DETECTOR 1-15		                 = 	 3.0  # roughly the number of sigma cut for the distribution, make smaller for tighter cut.
+
+
+# ------ Phonon Chi2 Cut for noise generation ------
+PARAMETER_INTEGER       DO_PHONON_CHISQ_CUT             DETECTOR 1-12,14-15             =       1
+PARAMETER_INTEGER       P_CHISQ_CUT_PERCENT             DETECTOR 1-12,14-15             =       70
+
+PARAMETER_INTEGER       DO_PHONON_CHISQ_CUT             DETECTOR 13             =       1
+PARAMETER_INTEGER       P_CHISQ_CUT_PERCENT             DETECTOR 13             =       50
+
+
+
+# --------   template  normalization -------
+
+PARAMETER_DOUBLE	P_PULSENORM	DETECTOR 1-15	=  1
+PARAMETER_DOUBLE	Q_PULSENORM	DETECTOR 1-15	=  1
+
+# -------- Butterworth filter for phonon integal calculation --------
+
+PARAMETER_INTEGER	P_INTEGRAL_BUTTERWORTH_ORDER	DETECTOR 1-15	=	2
+PARAMETER_DOUBLE	P_INTEGRAL_BUTTERWORTH_CUTOFF	DETECTOR 1-15	=	100
+
+
+# --------- Inflection time ----------
+
+PARAMETER_INTEGER	P_INFLECTION_WINDOW_MIN		DETECTOR 1-15	=	400
+PARAMETER_INTEGER	P_INFLECTION_WINDOW_MAX		DETECTOR 1-15	=	1000
+
+# --------- relative phonon calibration (for PT)  ---------
+# FIXME - this constants not generated for R132 yet!
+
+# --------- relative phonon calibration (for PT)  ---------
+
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 1    =  1.2118      0.76319       0.773     0.80571      1.2405      1.0496      1.0392           1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 2    =  1.0756      1.1754      1.0873       1.239      1.5019      1.0853           0            1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 3    =  0           0.77812     0.76044     0.79487      1.3483      1.0488      1.0928           1
+#PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 4    =  0.63802     0.69801     0.70917     0.78568      1.3406      1.0425     0.94466           1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 4    =  0.63802     0.69801     0.70917     0.78568 
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 5    =  0.81955     0.93785     0.81704     0.93797      1.2289      1.0643      1.0588           1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 6    =  0.97731           0      1.4987           0      1.2106     0.98852      1.0252           1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 7    =  0.86571     0.96573      1.0821     0.88842        1.37     0.75438      1.0324           1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 8    =  0.96373      1.1669      1.0603      1.0099       1.558      1.0443      1.0672           1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 9    =  1.2493      1.2171      1.3209      1.3486      1.6082      1.2398      1.2644            1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 10   =  0.86802     0.71117     0.58837     0.72275      1.3209       1.486      0.9815           1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 11   =  0.70277     0.78581     0.66544     0.78324      1.2068     0.95927      1.0582           1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 12   =  0.64469     0.84958     0.77628     0.71447      1.3479     0.99923     0.96684           1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 13   =  0           1.1279      1.2494     0.91701      1.3402      1.1425     0.94045            1
+PARAMETER_DOUBLE        P_RELATIVE_CALIBRATION          DETECTOR 14   =  0.52        0.53854      0.5217     0.61112      1.1794     0.99076     0.91357          1
+PARAMETER_DOUBLE	P_RELATIVE_CALIBRATION	        DETECTOR 15   =  0.91519     0.93518     0.85275      1.0145      1.3236     0.92437           0           1
+
+
+# ------------- Noise events rejection  for PipeFitPhonon, WedgeFitPhonon, etc. --------------
+# ------------- FIXME these have not been updated for R133!! - not using time domain fits at the moment --------------
+
+PARAMETER_DOUBLE	RDEL_THRESHOLD	DETECTOR 1-15 	=	100
+
+# PT threshold for various analysis such as NSOF (Usage: PTOFamps*1e8> PT_THRESHOLD)
+# set to 1.5 sigma
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 1 	=    0.69
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 2 	=    0.87
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 3 	=    0.72
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 4 	=    0.49
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 5 	=    0.66
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 6 	=    0.88
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 7 	=    1.32
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 8 	=    1.03
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 9 	=    0.96
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 10 	=    0.83
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 11 	=    0.60
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 12 	=    0.55
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 13 	=    3.15
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 14 	=    0.52
+PARAMETER_DOUBLE	PT_THRESHOLD	DETECTOR 15 	=    0.70
+
+
+# ---------------- Tail Fit -------------------
+# window
+PARAMETER_INTEGER	P_TAIL_FIT_USE_QDELAY	DETECTOR 1-15	=	0 # user PTOFdelay instead
+PARAMETER_DOUBLE	P_TAIL_FIT_START	DETECTOR 1-15	=	800e-6
+
+# constraint fall time
+# 0 -> no constraint
+# 1 -> constraint +/- 1 sigma
+# 2 -> fix
+
+PARAMETER_INTEGER	P_TAIL_FIT_TAU_FLAG	DETECTOR 1-15	=	2
+
+# tau fit (in musec)
+
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 1	=        690   659   668   665   688   669   666   666
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 2	=        740   733   736   742   762   728   734   734
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 3	=        667   661   660   678   686   662   660   662
+#PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 4	=        639   631   643   635   651   633   632   630
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 4	=        639   631   643   635
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 5	=        666   647   659   654   686   655   660   656
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 6	=        641   721   633   642   658   634   638   638
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 7	=        753   748   736   740   733   742   739   738
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 8	=        740   756   754   779   760   733   724   731
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 9	=        761   754   760   771   768   750   779   753
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 10	=        610   625   610   601   641   594   590   630
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 11	=        758   756   756   763   797   753   753   757
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 12	=        665   651   645   672   669   648   646   639
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 13	=        716   716   712   722   726   711   711   706
+PARAMETER_DOUBLE        P_TAIL_FIT_TAU          DETECTOR 14     =        764   746   747   751   821   757   744   754
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU		DETECTOR 15	=        683   656   654   653   685   665   654   669
+
+
+
+# tau fit sigma (in musec)
+
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 1	=         24    19    32    19    28    19    19    20
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 2	=         40    21    19    47    22    28    19    16
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 3	=         22    24    27    19    24    19    31    48
+#PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 4	=         13    13    16    14    26    14    18    15
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 4	=         13    13    16    14
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 5	=         13    38    14    20    44    15    21    22
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 6	=         51    99    48    46    51    44    47    46
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 7	=         44    42    45    43    47    42    43    64
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 8	=         29    34    28    34    43    27    29    31
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 9	=         31    31    56    33    34    30    36    51
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 10	=         43    40    46    41    46    49    41    44
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 11	=         30    32    29    31    35    28    46    32
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 12	=         26    20    37    23    29    24    28    26
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 13	=         77    76    75    75    75    74    76    74
+PARAMETER_DOUBLE        P_TAIL_FIT_TAU_SIGMA    DETECTOR 14     =         23    21    19    25    32    20    37    22
+PARAMETER_DOUBLE	P_TAIL_FIT_TAU_SIGMA	DETECTOR 15	=         26    24    21    20    23    30    23    24
+
+
+
+
+
+# _____________________________________________________
+#
+#              DETECTOR CONFIGURATION
+#        
+# _____________________________________________________
+#
+
+
+# ------------- towers name ---------------
+
+DET_TOWER	DETECTOR 1-3	=	IT1
+DET_TOWER	DETECTOR 4-6	=	IT2
+DET_TOWER	DETECTOR 7-9	=	IT3
+DET_TOWER	DETECTOR 10-12	=	IT4
+DET_TOWER	DETECTOR 13-15	=	IT5
+
+
+
+# ------------ index within tower ---------
+
+PARAMETER_INTEGER 	INDEX_IN_TOWER DETECTOR 1,4,7,10,13  	= 	1
+PARAMETER_INTEGER 	INDEX_IN_TOWER DETECTOR 2,5,8,11,14  	= 	2
+PARAMETER_INTEGER 	INDEX_IN_TOWER DETECTOR 3,6,9,12,15  	= 	3
+
+
+# ----------- detector substrate -----------------
+#
+                
+DET_SUBSTRATE 	DETECTOR 1-15				=	Ge 
+
+
+# ---------- ADC/Trigger configuration ---------
+
+# Note:
+#  sample rate, pretrigger, posttrigger are read INFO file
+#   default values below are used in case file not existing
+
+ 
+
+#  default Sample rate 
+
+PARAMETER_DOUBLE	P_SAMPLERATE	DETECTOR 1-15	=	0.625e06
+PARAMETER_DOUBLE	Q_SAMPLERATE	DETECTOR 1-15	=	1.25e06			
+
+# default Pre-trigger 
+
+PARAMETER_INTEGER	P_PRETRIGGER	DETECTOR 1-15	=	512
+PARAMETER_INTEGER	Q_PRETRIGGER	DETECTOR 1-15	=	1024			
+
+#  default Post-trigger 
+
+PARAMETER_INTEGER	P_POSTTRIGGER	DETECTOR 1-15	=	3584
+PARAMETER_INTEGER	Q_POSTTRIGGER	DETECTOR 1-15	=	1024			
+
+
+
+
+
+# digitizer Bins per Volt at Struck 
+
+PARAMETER_DOUBLE	P_DigitizerBinsPerVolt	DETECTOR 1-15	=	3.2768e3
+PARAMETER_DOUBLE	Q_DigitizerBinsPerVolt	DETECTOR 1-15	=	3.2768e3
+
+# R shunt
+
+PARAMETER_DOUBLE	P_Rshunt	DETECTOR 1-15	=	20E-3
+
+# Phonon feeback gain (=10 (input/fb turn ratio) * 1000 Ohm fb resistor)
+PARAMETER_DOUBLE	P_FBgain	DETECTOR 1-15	=	10000
+
+# Charge feedback cap = 1 pF
+PARAMETER_DOUBLE	Q_CFB		DETECTOR 1-15	=	1e-12	
+
+# Charge feedback resistor = 40 MOhms
+PARAMETER_DOUBLE	Q_RFB		DETECTOR 1-15	=	40e6
+
+# charge 1st stage gain
+PARAMETER_DOUBLE	Q_Gain1		DETECTOR 1-15	=	11
+
+# driver gains (if not set from ISR file) 
+PARAMETER_DOUBLE	P_DriverGain	DETECTOR 1-15	=	20	
+PARAMETER_DOUBLE	Q_DriverGain	DETECTOR 1-15	=	2
+
+
+
+# saturation value 
+
+PARAMETER_INTEGER	P_SATURATION	DETECTOR 1-15 	=	12000
+PARAMETER_INTEGER	Q_SATURATION	DETECTOR 1-15	=	12000
+
+# minimum value 
+
+PARAMETER_INTEGER	P_MINADC	DETECTOR 1-15 	=	2
+PARAMETER_INTEGER	Q_MINADC	DETECTOR 1-15	=	2
+
+# baseline 
+
+PARAMETER_INTEGER	P_BASELINE_MIN 		DETECTOR 1-15 	=	1
+PARAMETER_INTEGER	P_BASELINE_MAX 		DETECTOR 1-15 	=	400
+PARAMETER_INTEGER	P_POSTBASELINE 		DETECTOR 1-15 	=	100 #for end of trace baseline
+
+PARAMETER_INTEGER	Q_BASELINE_MIN 		DETECTOR 1-15 	=	1
+PARAMETER_INTEGER	Q_BASELINE_MAX 		DETECTOR 1-15 	=	400
+PARAMETER_INTEGER	Q_POSTBASELINE 		DETECTOR 1-15 	=	100 #for end of trace baseline
+

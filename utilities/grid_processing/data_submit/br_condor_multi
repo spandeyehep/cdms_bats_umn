@@ -1,0 +1,20 @@
+
+universe = globus
+globusscheduler = fngp-osg.fnal.gov/jobmanager-condor
+
+executable = /grid/data/cdms/processing/processing_scripts/run_br_multi.sh
+
+transfer_output = true
+transfer_error = true
+transfer_executable = true	
+notification = NEVER
+
+#log = /grid/data/cdms/processing/br_logs/log/$(Cluster).$(Process).log
+
+output = /grid/data/cdms/processing/br_logs/out/$(Cluster).$(Process).out
+
+error = /grid/data/cdms/processing/br_logs/err/$(Cluster).$(Process).err
+
+globusrsl = (jobtype=single)(maxwalltime=999)
+queue
+

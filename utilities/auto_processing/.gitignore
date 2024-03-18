@@ -1,0 +1,5 @@
+*.bak
+submission/archive
+activejobs
+*.pyc
+merge_filelist

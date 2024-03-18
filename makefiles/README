@@ -1,0 +1,92 @@
+    *** PRELIMINARY *** PRELIMINARY *** PRELIMINARY *** PRELIMINARY ***
+		  Simplified Makefile system for CDMSBATS
+		  ---------------------------------------
+    *** PRELIMINARY *** PRELIMINARY *** PRELIMINARY *** PRELIMINARY ***
+
+Last update: $Id$
+
+A new Makefile system is in the process of being developed for CDMSBATS,
+which will allow addition of new source code without modifying the
+subdirectory Makefiles, and will support cross-platform (Linux and MacOSX)
+builds automatically.  This document describes the intended behaviour of the
+system once all of the development work is completed.
+
+At the top-level, cdmsbats/Makefile provides an interface for users to build
+any of BatRoot, BatCalib or BatNoise without having to change directories.
+Users can build the whole package (source compilation, library, and
+executables), or individual pieces (e.g., for debugging); some examples
+include:
+
+make			# Compiles and links everything
+make BatRoot		# Builds everything in BatRoot, along with dependencies
+make BatCalib.lib	# Buils only the BatCalib library
+
+The first time anything is built, four "special" directories are created, to
+contain the intermediate products of building.  These are all placed within
+a "BUILD" directory, to hide the details from casual users.  GEANT4 users
+will be familiar with this from the "$G4WORKDIR" environment variable.
+
+BUILD/include	# Contains symbolic links to all .h files (for -I option)
+BUILD/obj	# Contains all of the .d dependency and compiled .o files
+BUILD/lib	# Contains the package libraries
+BUILD/bin	# Contains the finished executables
+
+Users should make sure that their PATH includes the cdmsbats/BUILD/bin
+directory in order to run the executables.
+
+There are five build targets available to users, any of which can also be
+appended to a package name, as shown above:
+
+make inc	# Creates symlinks to *.h files in BUILD/include directory
+make lib	# Compiles source code into BUILD/lib/lib<name>.a library
+make bin	# Compiles top-level source and links executable(s)
+make clean	# Deletes executables, library, object and dependency files
+make veryclean	# Deletes everything including the special directories
+
+The subdirectories which are supported are listed in the "PACKAGES" line of
+cdmsbats/Makefile.  If a new directory is created in the future, its name
+should be added to that list.
+
+Within each package, a simplified Makefile (BatRoot/Makefile and
+BatCalib/Makefile) defines only variables necessary for building:
+
+	BINS := BatCalib		# Names of executables to be built
+	LIBNAME := BatCalib		# Name of library (lib<name>.a)
+
+	DIRS := io_management generateRRQdata
+					# Subdirectories with library sources
+
+	include ../makefiles/cdmsbats.mk
+
+For BatRoot and BatNoise, the BINS and LIBNAME lines are modified
+appropriately.  The last line loads the general purpose control file
+(discussed below) which defines targets and actions for dependency
+management, compilation and linking.
+
+The file makefiles/arch.mk verifies that the build is being done on
+either a Linux or MacOSX system (and exits with an error otherwise), and
+sets Make variables appropriately for building on those respective systems.
+There are no user-controlled options here, but variables such as CXXFLAGS
+can be preset in environment variables before building.
+
+The file makefiles/setup.mk creates the top-level BIN, LIB, OBJ,
+and INC directories before any targets are invoked.  It may be used in the
+future for other configuration actions.
+
+The file makefiles/cdmsbats.mk references arch.mk first, then defines all of
+the file lists, targets, and actions need for building.
+
+LIBNAME	:=	Name of library to be built, e.g., BatRoot for libBatRoot.a
+BINS :=		Names of executables to be built, e.g., BatRoot, BatNoise, etc.
+DIRS :=		Names of subdirectories containing library source files
+SKIPFILES :=	Names of extraneous source files to be excluded from building
+BINCCFILES :=	Names of additional source files to compile and link directly
+
+If LIBNAME is not set, it will default to the name of the directory.  If the
+other variables are not set, they are just assumed to be empty (e.g.,
+BatCommon doesn't have any executables, so BINS is not defined).
+
+The file makefiles/packages.mk is used with the top-level Makefile.  It
+looks for any (top-level) directory containing a Makefile, and assumes that
+it can be built in CDMSBATS.  If no matching directories are found, an error
+message is printed.

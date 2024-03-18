@@ -1,0 +1,9 @@
+Usage: "BatViewer <raw directory|file> [<event#>]".  
+The first argument is the full path (can be relative) to either a directory containing a raw data series, or a single raw data file.  (The latter is mostly useful to view one_event.dat files).  The second argument is the event number including the dump (so the 23rd event in dump 4 would be 40023).  It may take a while to seek to events late in the file.
+So, on cdmsmini you might invoke
+BatViewer /data2/SoudanData/01120101_1615 20001
+to see the first event in the second dump (F0002).
+
+This will pop up a ROOT TCanvas which can be interacted with in all the usual ways (pull up the editor, zoom in, call fits, etc).  In addition, you can double-click on any of the sub-windows to pull up a new zoomed-in canvas showing only the subpad.  If you want to zoom into an entire zip (showing both phonon and charge in the zoomed plot), you can double click on the gray bar at the right of that zip's pad.  (Hopefully all this will be clearer when looking at the output.) Finally, if you double click on a single channel, it will zoom just it. The legend box is a good handle to get an entire phonon or charge pad without accidentally getting just a single channel.
+
+You can then scan through events using the terminal; just hit enter to progress to the next event, or enter a new event number to skip to it.  (For events within a single file, you can skip the dump prefix; e.g., if you are in dump 4, 13 and 40013 will both go to the same entry in that file). Finally, enter 'q' to quit. 

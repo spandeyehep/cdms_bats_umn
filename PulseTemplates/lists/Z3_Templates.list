@@ -1,0 +1,22 @@
+0000000000      1999999999	Z1_Templates_131121_1240        % Soudan
+2000000000      2906999999      Z1_Templates_221122_1704        % UCB
+2907000000      2999999999      Z1_Templates_290628_1344_v1     % UCB
+3000000000      3999999999      Z1_Templates_131121_1240	% CWRU data templates 
+4000000000      4999999999      Z1_Templates_131121_1240	% UFL  data templates 
+%510000000000   511005099999     Z1_Templates_290628_1344_v1     % Detector Monte Carlo output - iZIP UCB templates
+%511005100000   511999999999     Z1_Templates_290628_1344_12chn  % Detector Monte Carlo output - iZIP UCB templates 12 chn
+511104010000    511112322359    Z1_Templates_DCRC_2048          % g101 DMC data from slac
+10000000000    	11104000000	Z1_Templates_131121_1240        % Soudan STHybrid 
+11105000000    	19999999999	Z1_Templates_R133               % R133 templates
+60000000000    	69999999999      Z1_Templates_DCRC_4096	        % Queens data templates w/ 3998 bins
+70000000000    	71005040000      Z1_Templates_DCRC_3998	        % UMN  data templates w/ 3998 bins
+71005040001    	71202032032      Z1_Templates_DCRC_4096		% UMN  data w/ 4096 bins
+71202032033    	71609199999	Z1_Templates_UMN_G103		% UMN data w 8192 bins
+71609200000	71609211227	Z1_Templates_UMN_S1501_R33k	% 150mm Contact free Si with 33kOhm FB resistor
+71609211228	71609211349	Z1_Templates_UMN_S1501_R0	% 150mm Contact free Si with no extra resistor
+71609211350	71609231599	Z1_Templates_UMN_S1501_R33k	
+71609231600	71609251099	Z1_Templates_UMN_S1501_R0	
+71609251100	71609260999	Z1_Templates_UMN_S1501_R33k	
+71609261000	71609261229	Z1_Templates_UMN_S1501_R0
+71609261230	79999999999	Z1_Templates_UMN_S1501_R33k
+990000000000   	999999999999	Z1_Templates_131121_1240

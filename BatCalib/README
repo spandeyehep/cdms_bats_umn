@@ -1,0 +1,138 @@
+==========================
+*         SETUP 	 *
+==========================
+
+BatCalib is the second tier of data processing.   To run it, you must have
+ROOT (v5.20 or later) properly installed.  See the ROOT webpages for install
+instruction
+    
+Once you have done this, build BatCalib from this directory (or the one above it) 
+by typing:
+
+make BatCalib  
+
+After successful compilation, you will need to set the following paths so
+that BatCalib knows where to find the RQ data and where to put the output:
+
+CDMSBATSDIR (optional if you set BATCALIB_PROC and BATCALIB_CONST)
+this is the directory where you checked out "cdmsbats"
+i.e. /somedirectory/cdmsbats
+
+BATCALIB_PROC (optional)
+an alternate directory where the job-setting files are located,
+without specifying this, BatCalib will pick up the default file from:
+/somedirectory/cdmsbats/UserSettings/BatCalibSettings/processing
+
+BATCALIB_CONST (optional)
+an alternate directory where the calibration constants files are located,
+without specifying this, BatCalib will pick up the default file from:
+/somedirectory/cdmsbats/UserSettings/BatCalibSettings/calibration
+
+BATCALIB_RQDATA
+this is the directory where the rq data files are (these end in .root)
+
+BATCALIB_RRQDATA
+this is the directory where you want to put the output root files.
+
+The make command places the executable into the BUILD/bin directory 
+(see cdmsbats/README).  To run without having to specify the full path 
+to this directory, you may set your path to point to this directory:
+
+TCSH:		setenv PATH ${PATH}:$CDMSBATSDIR/BUILD/bin
+BASH:		export PATH=${PATH}:$CDMSBATSDIR/BUILD/bin
+
+In addition to the environmental variables, set the file prefixes in the
+UserSettings/BatCalibSettings/processing/optionsXXXXData.Default file (where XXXX corresponds to the
+location of your experiment).  You must set both RQ_DATA_PREFIX and
+RRQ_DATA_PREFIX.  These will look for and write out files with the prefixes
+that you specified.  Don't use the same prefix for both!  Otherwise BatCalib
+will try to write output data to the input file.
+
+==========================
+*   Executing BatCalib   *
+==========================
+
+
+Once you have properly set the above, run BatCalib (in BUILD/bin) by typing:
+
+BatCalib series# dump# maxEvents(optional) processingFile(optional) calibrationFile(optional)
+
+For example, if you want to process 10 events from an RQ file myfile_170319_1616_F0002.root type:
+
+BatCalib 170319_1616 2 10
+
+(inside your options file, RQ_DATA_PREFIX should be set to "myfile")
+
+* Note that this command is intended to process one file per raw data file.
+  If you want to run on a merged rq file as we did for production in 2010,
+  then you can specify this by changing the flag "USE_MERGED_RQ = 1" in the
+  options configuration file.  For this, then subsitute the word "merged" in
+  place of the dump#.  This change was made to facilite automated processing
+  of files at Soudan and also at the test facilities.
+
+
+==========================
+*        SETTINGS 	 *
+==========================
+
+In the directory $CDMSBATSDIR/UserSettings/BatCalibSettings/processing, there are various files that begin
+with the prefix "options" and end with ".Default".  These are text files
+that tell BatCalib what processing configuration to run in.  Most of the
+setting are fairly self explanatory.  Examples of things you can control
+include which pulse analyzing algorithms are run (for example Optimal Filter
+and PipeFitter).  You can also turn the processing on and off for specific
+detectors or components of the experiment.  For example, you can turn off
+calibration of all zips except zip17.  Look in the file and follow the
+examples.  If is fairly self explanatory and the format is flexible.  You DO
+NOT need to RECOMPILE BatCalib for these settings to be picked up!  BatCalib
+will automatically detect which experimental location your data comes from
+(i.e Soudan, or UCB or SUF) and it will load the relevant processing
+configuration for that dataset.
+
+Alternately, you can force BatCalib to read a different processing
+configuration file then the one that has the .Default extension by passing
+it in the full pathname as a third argument to the BatCalib command (see
+above).
+
+NOTE: The calibration algorithms should match the RQ's that exist in your
+file.  If you did not run Pipefitter in BatRoot when you generated your RQ
+file, then do not run PipeFitter in BatCalib when processing that file.  If
+you forget this step, then BatCalib will not allow you to process the data
+until you fix your configuration file.
+
+*****
+
+CALIBRATION CONSTANTS:
+
+In the directory $CDMSBATSDIR/UserSettings/BatCalibSettings/calibration, is
+another set of configuration files.  These contain all the parameters and
+calibration constants that are used by the various calibration algorithms.
+You can modify these parameters by changing the values in these files.
+Again you do no need to recompile for BatCalib to pick up a new value and
+you can also force BatCalib to read a different file by passing in the full
+directory path as a fourth argument to the BatCalib command.
+
+*****
+
+NOTES:
+
+Feb. 2011: Significant reorganization was done to accommodate the growing
+number of detector types and degenerate number of calculations for similar
+quantities.  Each detector type now has its own "GenRRQDataXXX" class.  The
+original version of BatCalib is preserved in the GenRRQDataCDMSII class,
+which works up through Soudan R131 data.  At the same time we streamlined
+the naming convention for rq's and rrq's, so some long-standing names become
+obsolte.  In particular, we renamed phonon optimal filter rq's from P*eV to
+P*amps.  The ConstFreqRTFTWalk quantities were renamed from P*CFr% to P*WKr%
+and correspondingly the VarFreqRTFTwalk was renamed from P*r% to P*VWKr%.
+At the same time we standarized all phonon rrq quantities to begin with "p"
+and all charge rrq quantities to begin with "q". [LLH]
+
+
+----------------------
+
+For additional help or to ask questions, email: llhsu@fnal.gov,
+serfass@berkeley.edu
+
+Last update:
+$Id$

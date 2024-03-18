@@ -1,0 +1,61 @@
+The optimal filter requires the average PSD, which is constructed from a
+collection of noise traces.  The directory "cdmsbats/BatNoise"
+contains the code that selects noise traces, computes the average PSD from
+these traces and then calculates the various quantities needed by the
+OptimalFilter.  These, along with the pulse templates are stored in a
+"filter file".  The filter file is then read in during the BatRoot session.
+
+Compiling and running the noise code is similar to compiling and running
+BatRoot.  Build the BatNoise executable from the "cdmsbats"
+top-level directory by typing |make BatNoise|.  This will put the executable
+in to the BUILD/bin directory (see cdmsbats/README).  
+
+After successful compilation, you will need to some of the same paths as for
+BatRoot, so that BatNoise knows where to find the raw
+data, various external files and where to put the output, along with
+
+CDMSBATSDIR (optional)
+this is the directory where you checked out "cdmsbats"
+i.e. /somedirectory/cdmsbats
+
+BATROOT_PROC (optional)
+this is the directory where the job-setting files are located,
+i.e. /somedirectory/cdmsbats/UserSettings/BatRootSettings/processing
+
+BATROOT_RAWDATA
+this is the directory where the raw data files are (these end in .gz)
+
+BATROOT_NOISEFILES
+this is the directory where BatNoise will write the filter files
+
+BATNOISE_TEMPLATES (optional)
+this is the directory where the teplate files for Optimal Filtering are found,
+i.e. /somedirectory/cdmsbats/PulseTemplates
+
+
+********
+
+To run the noise code type:
+
+BatNoise series# dump# maxEvents(optional) processingFile(optional) analysisFile(optional)
+
+Note that if you are trying to process a new type of data for the first
+time, then likely you will need new charge and/or phonon templates for your
+data.  The templates reside in the cdmsbats/PulseTemplates directory (or the
+directory pointed to by $NOISE_TEMPLATES).  If an
+incorrect template is being picked up by BatNoise then you probably need to
+tell it to use a different template.  The templates are chosen based on the
+series number and these are listed in the PulseTemplates/lists directory.  This
+is simply a series of text files that may be modified to specify which
+template file goes with which series range.  If a template doesnt' already
+exist for your data then contact one of the experts listed below (best
+person to ask about this is Bruno).
+
+
+----------------------
+
+For additional help or to ask questions, email: llhsu@fnal.gov,
+serfass@berkeley.edu, mskos@physics.syr.edu
+
+Last updated:
+$Id$

@@ -1,0 +1,69 @@
+BatFaker contains tools designed to produce fake raw data files, primarily for use in data salting. 
+
+
+HISTORY:
+20161205 BML:  Initial creation
+
+BatFaker contains two executables, MapRawFile and BatFaker
+
+
+MapRawFile
+----------
+
+MapRawFile is a utility that is necessary to run before BatFaker.  It evaluates the structure of a raw data file to find the offset locations in bytes of every Event and every Record within the event.  This makes it much easier to load a specific pulse from a specific event in a data file. It is run by
+
+    MapRawFile <raw data file> [<map path>]
+
+This will produce an output file <map path>/`basename <raw data file>`.eventmap. If <map path> is not provided, it will attempt to create the .eventmap file alongside the raw data file. Map files have already been created for the raw files from Soudan on cdmstera2.fnal.gov. 
+
+BatFaker
+--------
+
+BatFaker is the executable used to generate a fake raw data file.  It works by taking an original file and replacing selected pulses with arbitrary sums of raw pulses and pulse templates. The command line usage is:
+
+    Usage: BatFaker [<options>] <rawdatatopdir> <outdir> <controlfile>
+    Available Options:
+        --detstatusfile <file>  File containing detector status entries
+ 	-h,--help                  Print program usage info
+    	--mapdir        <dir>   Directory containing .eventmap files
+    	--nosubdirs             Don't create subdirectories for output series
+    	--skim                  Only copy events explicitly mentioned in control
+                                  file
+        --templatedir   <dir>   Directory containing BatRoot templates
+                                  (PulseTemplates)
+
+- <rawdatatopdir> is the directory containing all of the original raw data series folders/links.  (E.g. /tera2/data1/raw_data). 
+
+- detstatusfile defaults to UserSettings/BatRootSettings/detector_status/detectorStatus.SuperCDMS under cdmsbats. Note that this assumes that we are running from the top level cdmsbats directory. The executable may need to be modified to check 
+
+- if mapdir is not provided, BatFaker will look for .eventmap files alongside the original raw data files, which will not usually be the case.  If it is provided, BatFaker assumes all .eventmap files are in the same directory (i.e. <mapdir>/<series_dump>.eventmap rather than <mapdir>/<series>/<series_dump>.eventmap.  
+
+- by default, BatFaker will produce an output directory hierarchy like the Soudan data, i.e. <outdir>/<series>/<series_dump>.  If --nosubdirs is given, all of the output files will go directly into <outdir>
+
+- by default, if a dump has a single entry in the BatFaker control file (see below), all events in the file will be copied.  If --skim is given, only events appearing in the control file will be copied.
+
+- templatedir defaults to PulseTemplates, again assuming that we are running from the top cdmsbats directory.  If this is not true, it may need to be provided.
+
+
+
+The control file is used to specify how to build the fake events.  Each line of the file specifies a single replace or copy action.  Lines beginning with '#' are treated as comments and ignored, and blank lines are allowed. Other lines must have one of the following forms:
+
+- Copy(series,event) , which will copy an event from a given series without any modification.  This is only necessary if using the --skim option. 
+
+- Replace(series, event, detCode) => F1() [ + F2() [ + F3() ... ] ]
+
+This will replace the waveform for the given detCode by the sum of the functions 'F'. The detCode is the internal representation of channel IDs in cdmsbats and has the form 1000000*detType + 1000*detNum + channelNum. TODO: allow specifying the waveform by detnum and channel name.   Quotes are not required around string arguments, but are allowed. Commas are required to separate arguments, and spacing around commas is allowed but not required.  *Spacing around the => and + signs separating functions is required!*
+
+Allowed values for F are:
+- TemplateByName(series, dump, detectornum, templatename [,scale [,delay]] )
+- TemplateByCode(series, dump, detectorcode, templatesuffix [,scale [,delay]] )
+- RawPulse(series, event, detectorcode [,scale [,delay]] )
+
+In general templatename is the same as channel name, but may be any template found in the appropriate file under PulseTemplates/files, such as LF noise, etc. For two-template pulse sim, the template names are like "P*fast" and "P*slow". In this case, the suffix argument for TemplateByCode should be "fast" or "slow"; for the default OF template, this argument should be blank. The template code annoyingly requires the series and dump to be specified in order to find the correct template. 
+
+RawPulse copies the raw pulse from the named series and event (note that it doesn't have to be from the same detector/channel!). This is probably best used to get noise traces for adding templates to. Note: the pulse is taken as-is and in particular is not baseline subtracted first, so adding multiple raw pulses together or scaling raw pulses will move the baseline around!
+TODO: Add a BaseSubRawPulse option
+
+The scale parameter is multiplied to the height of the pulse (and can be negative e.g. for 2T pulses). For perfect reconstruction, P#OFamps*P#norm = scale. I think it should be the same for Q (e.g. Q#OFvolts*Q#norm = scale). 
+
+The delay should be in units of seconds and shifts the pulse relative to the trigger. If the delay does not reduce to an integer number of bins, the delayed value is linearly interpolated from bin edges. For templates, the bins at the edge are zero-filled; for raw pulses, the bin values wrap. 

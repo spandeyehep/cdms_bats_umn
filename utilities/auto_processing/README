@@ -1,0 +1,98 @@
+README for automated CDMS processing scripts
+Last Updated by Ben Loer, Dec 18, 2012
+
+******************** QUICKSTART GUIDE *************************
+Follow these steps to launch a processing job on either a grid or
+other computer. 
+
+***Environment Setup:
+1) Have a working ROOT installation, with ROOTSYS defined. On several
+   common processing machines, this will be automatically found.
+
+2) Have cdmsbats compiled (and linked against the same version of ROOT
+   above). Define the environment variable CDMSBATSDIR pointing to the
+   cdmsbats directory. If CDMSBATSDIR is not defined, we will attempt
+   to guess the location, either $PWD/cdmsbats or $PWD/../..
+   . Therefore, you can always make a symlink in this directory to
+   your cdmsbats installation.
+
+3) If there is already a copy of the raw data that you want to process
+   on your local machine, define an environemnt variable CDMS_RAWDATA
+   that points to it. Note that these scripts will expect to find the
+   data under the run name, e.g. $CDMS_RAWDATA/R133. If your data is
+   not under this type of directory structure, the easiest solution is
+   to point CDMS_RAWDATA to a location with symlinks for the run name.
+
+4) If CDMS_RAWDATA is not defined, the scripts will attempt to
+   download the rawdata from the rsync daemon on
+   cdmsmicro.fnal.gov. Currently, this is firewalled to only allow
+   traffic from within the fnal.gov domain. If you need to do
+   processing elsewhere, either request access, or, if you have ssh
+   access to cdmsmicro, you can define CDMS_RAWDATA as
+   "<user>@cdmsmicro.fnal.gov:/localhome/cdms/rawdata". Note that if
+   your kerberos authentication expires before downloading is
+   finished, the job will abort.
+
+5) Define an environment variable CDMS_PROCESSINGDIR to hold the
+   temporary working files as well as the processed output. If this
+   variable is not defined, it will default to $PWD/activejobs (which
+   can be a symlink). This should point to a large disk with lots of
+   free space!
+
+***Running:
+Once the environment is set up, create a runlist in the "submission"
+folder in this directory. The runlist must contain one line for each
+series to be processed, with two columns: series number and the number
+of dumps to process for that series. Then call
+./interactive_setup.sh  
+and follow the interactive prompts to start the job.
+
+Rather than define all the variables interactively,
+you can create a job file and provide it directly to the submission
+script, via
+./launch_cdms_processing.sh <myjob>
+After you've answered all the questions in interactive_setup.sh, 
+you'll get the option to save your answers to a submission file for later use.
+
+***Monitoring:
+Once the job is launched, you can get some information about the status of the
+job by running "./jobstatus.py $CDMS_PROCESSINGDIR/<jobname>", where
+<jobname>  is the name of your runlist, minus a possible trailing .txt
+suffix.  Remember that $CDMS_PROCESSINGDIR may be "activejobs" To get
+continuous  information, you can use the bash "watch" command,  e.g.
+watch --interval 60 ./jobstatus.py activejobs/myjob
+
+If any single child process encounters an error, it will create a file ABORT
+in the working directory, which will cause all other child processes to also 
+abort when they reach an appropriate point. If you know the cause of the 
+problem, you can try resuming the job by running ./process_master.sh again and
+following the prompts.
+
+If you want to manually abort all jobs for some reason, simply create the 
+ABORT file, via
+touch activejobs/myjob/ABORT
+The workers will not abort immediately, but only after they finish their 
+current job.
+
+******************** General Description *******************************8
+
+These scripts are intended to simplify many of the steps of CDMS raw data 
+processing. If properly set up, the master script will create a working 
+directory populated with a list of necessary tasks, then launch several 
+child "daemons" that will execute each of the remaining jobs. These child 
+processes can be run locally or as condor grid jobs.
+
+Currently, the tasks undertaken by these scripts are:
+- copy the gpip_states_changed.log file from the raw data repository
+- copy all of the auxiliary files for a given series from raw data
+- copy the first dump file of a series, and generate the filter file
+- for each dump in a series, copy it from the repository, then run BatRoot and
+  BatCalib on it
+- After all dumps in a run are finished, merge the rq and rrq files
+
+All of the output files are put into the appropriate directory structure in the
+output/ tree of the working directory. In principle, adding additional stages,
+such as blinding, should be possible. 
+If the job is run on the same machine as the raw data, the data is linked, 
+rather than copied to the scratch directories. 
+
