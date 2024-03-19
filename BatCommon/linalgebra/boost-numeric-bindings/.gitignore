@@ -1,0 +1,6 @@
+*~
+*.swp
+*.patch
+.svn
+*.orig
+*.rej

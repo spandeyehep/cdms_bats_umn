@@ -1,0 +1,10 @@
+all:
+	true
+
+install:
+	for header in `find boost -name '*.hpp' -o -name '*.h'`; do \
+	  tgt_dir=${PREFIX}/include/boost-numeric-bindings; \
+	  mkdir -p `dirname $$tgt_dir/$$header`; \
+	  cp $$header $$tgt_dir/$$header ; \
+	  done
+
